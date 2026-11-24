@@ -150,8 +150,7 @@ class JarvisNotificationListener : NotificationListenerService() {
         val sender: String?
     )
     
-    companion object {
-        private val messagingApps = listOf(
+    private val messagingApps = listOf = listOf(
             "com.whatsapp",
             "com.google.android.apps.messaging",
             "com.samsung.android.messaging",
