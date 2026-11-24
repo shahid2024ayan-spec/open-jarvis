@@ -25,20 +25,21 @@ class UniversalAdapter(private val context: Context) {
         val baseUrl = prefs.getString("provider_base_url", "")
         val apiKey = prefs.getString("provider_api_key", "")
         val model = prefs.getString("provider_model", "")
+            ?.takeIf { it.isNotBlank() } ?: getDefaultModel(name ?: "Groq")
         
         return when (name) {
-            "Groq" -> GroqProvider(apiKey ?: "", model ?: "")
-            "Google Gemini", "gemini" -> GeminiProvider(apiKey ?: "", model ?: "")
-            "OpenRouter" -> OpenRouterProvider(apiKey ?: "", model ?: "")
-            "Anthropic Claude" -> AnthropicProvider(apiKey ?: "", model ?: "")
-            "OpenAI" -> OpenAIProvider(apiKey ?: "", model ?: "")
-            "Ollama (Local)" -> OllamaProvider(baseUrl ?: "", model ?: "")
+            "Groq" -> GroqProvider(apiKey ?: "", model)
+            "Google Gemini", "gemini" -> GeminiProvider(apiKey ?: "", model)
+            "OpenRouter" -> OpenRouterProvider(apiKey ?: "", model)
+            "Anthropic Claude" -> AnthropicProvider(apiKey ?: "", model)
+            "OpenAI" -> OpenAIProvider(apiKey ?: "", model)
+            "Ollama (Local)" -> OllamaProvider(baseUrl?.takeIf { it.isNotBlank() } ?: "http://127.0.0.1:11434", model)
             "Local (LlamaCpp)" -> {
                 val mm = getModelManager(context)
                 val tier = mm.getDownloadedTier() ?: ModelManager.ModelTier.MINIMUM
                 LlamaProvider(mm.getModelPath(tier), tier.displayName)
             }
-            "Custom" -> CustomProvider(baseUrl ?: "", apiKey ?: "", model ?: "")
+            "Custom" -> CustomProvider(baseUrl ?: "", apiKey ?: "", model)
             else -> CustomProvider(baseUrl ?: "", apiKey ?: "", model ?: "")
         }
     }
