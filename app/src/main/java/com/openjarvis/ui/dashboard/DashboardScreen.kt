@@ -278,7 +278,7 @@ private fun StatsRow(tasks: List<TaskNode>, alpha: Float) {
         label = "count"
     )
     
-    Column(alpha = alpha) {
+    Column(modifier = Modifier.graphicsLayer(alpha = alpha)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
