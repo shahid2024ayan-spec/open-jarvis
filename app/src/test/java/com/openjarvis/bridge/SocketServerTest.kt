@@ -27,10 +27,10 @@ class SocketServerTest {
 
     @Test
     fun escapeJsonEscapesControlCharactersAndQuotes() {
-        val escaped = SocketServer.escapeJsonValue("hello\\nworld\"test\\tvalue")
-        assertTrue(escaped.contains("\\\\n"))
-        assertTrue(escaped.contains("\\\\""))
-        assertTrue(escaped.contains("\\\\t"))
+        val escaped = SocketServer.escapeJsonValue("hello\nworld\"test\tvalue")
+        assertTrue(escaped.contains("\\n"))
+        assertTrue(escaped.contains("\\\""))
+        assertTrue(escaped.contains("\\t"))
     }
 
     @Test
