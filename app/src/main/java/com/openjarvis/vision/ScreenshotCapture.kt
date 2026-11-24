@@ -8,6 +8,7 @@ import android.graphics.PixelFormat
 import android.media.ImageReader
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
+import android.hardware.display.DisplayManager
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.DisplayMetrics
@@ -82,6 +83,7 @@ class ScreenshotCapture(private val context: Context) {
                 displayWidth,
                 displayHeight,
                 displayDensity,
+                DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
                 surface,
                 null,
                 handler
