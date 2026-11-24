@@ -14,6 +14,11 @@ class JarvisNotificationListener : NotificationListenerService() {
     private val scope = CoroutineScope(Dispatchers.IO)
     private var graphifyRepo: GraphifyRepository? = null
     private val notifications = mutableListOf<JarvisNotification>()
+
+    override fun onCreate() {
+        super.onCreate()
+        graphifyRepo = GraphifyRepository(this)
+    }
     
     companion object {
         private val PRIVACY_PROTECTED_APPS = setOf(
