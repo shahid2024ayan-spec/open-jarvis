@@ -19,7 +19,7 @@ class AutomationManager(private val context: Context) {
     val automationsFlow: StateFlow<List<Automation>> = _automationsFlow
     
     suspend fun loadAutomations() {
-        _automationsFlow.value = dao.getAll().map { it.toAutomation() }.map { it.toAutomation() }.map { it.toAutomation() }
+        _automationsFlow.value = dao.getAll().map { it.toAutomation() }.map { it.toAutomation() }
     }
     
     suspend fun createAutomation(automation: Automation): String = withContext(Dispatchers.IO) {
@@ -143,7 +143,7 @@ class AutomationManager(private val context: Context) {
             lastResult = result,
             runCount = automation.runCount + 1
         )
-        dao.update(updated)
+        dao.update(updated.toEntity())
     }
     
     private fun calculateDelay(targetHour: Int, targetMinute: Int): Long {
