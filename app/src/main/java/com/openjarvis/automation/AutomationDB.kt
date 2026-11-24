@@ -21,19 +21,72 @@ data class AutomationEntity(
     val runCount: Int = 0
 )
 
+fun AutomationEntity.toAutomation(): AutomationManager.Automation {
+    val schedule = when (scheduleType.lowercase()) {
+        "daily" -> AutomationManager.AutomationSchedule.Daily(scheduleHour, scheduleMinute)
+        "weekly" -> AutomationManager.AutomationSchedule.Weekly(scheduleDayOfWeek, scheduleHour, scheduleMinute)
+        "interval" -> AutomationManager.AutomationSchedule.Interval(scheduleIntervalMs)
+        "once" -> AutomationManager.AutomationSchedule.Once(scheduleIntervalMs)
+        else -> AutomationManager.AutomationSchedule.Daily(scheduleHour, scheduleMinute)
+    }
+    return AutomationManager.Automation(
+        id = id,
+        name = name,
+        command = command,
+        schedule = schedule,
+        enabled = enabled,
+        lastRun = lastRun,
+        lastResult = lastResult,
+        runCount = runCount
+    )
+}
+
+fun AutomationManager.Automation.toEntity(): AutomationEntity {
+    val type: String
+    val hour: Int
+    val minute: Int
+    val dayOfWeek: Int
+    val intervalMs: Long
+    when (val value = schedule) {
+        is AutomationManager.AutomationSchedule.Daily -> {
+            type = "daily"; hour = value.hour; minute = value.minute
+            dayOfWeek = 0; intervalMs = 0L
+        }
+        is AutomationManager.AutomationSchedule.Weekly -> {
+            type = "weekly"; hour = value.hour; minute = value.minute
+            dayOfWeek = value.dayOfWeek; intervalMs = 0L
+        }
+        is AutomationManager.AutomationSchedule.Interval -> {
+            type = "interval"; hour = 0; minute = 0
+            dayOfWeek = 0; intervalMs = value.intervalMs
+        }
+        is AutomationManager.AutomationSchedule.Once -> {
+            type = "once"; hour = 0; minute = 0
+            dayOfWeek = 0; intervalMs = value.atMs
+        }
+    }
+    return AutomationEntity(
+        id = id, name = name, command = command, scheduleType = type,
+        scheduleHour = hour, scheduleMinute = minute,
+        scheduleDayOfWeek = dayOfWeek, scheduleIntervalMs = intervalMs,
+        enabled = enabled, lastRun = lastRun, lastResult = lastResult,
+        runCount = runCount
+    )
+}
+
 @Dao
 interface AutomationDao {
     @Query("SELECT * FROM automations ORDER BY name")
-    suspend fun getAll(): List<AutomationManager.Automation>
+    suspend fun getAll(): List<AutomationEntity>
     
     @Query("SELECT * FROM automations WHERE id = :id")
-    suspend fun getById(id: String): AutomationManager.Automation?
+    suspend fun getById(id: String): AutomationEntity?
     
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(automation: AutomationManager.Automation)
+    suspend fun insert(automation: AutomationEntity)
     
     @Update
-    suspend fun update(automation: AutomationManager.Automation)
+    suspend fun update(automation: AutomationEntity)
     
     @Query("DELETE FROM automations WHERE id = :id")
     suspend fun delete(id: String)
