@@ -1,7 +1,7 @@
 package com.openjarvis.intelligence
 
 import android.app.Notification
-import android.content.pm.PackageManager
+import com.openjarvis.accessibility.JarvisAccessibilityService
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import com.openjarvis.graphify.GraphifyRepository
