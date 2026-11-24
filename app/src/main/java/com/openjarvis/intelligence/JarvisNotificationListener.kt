@@ -56,9 +56,7 @@ class JarvisNotificationListener : NotificationListenerService() {
         
         scope.launch {
             try {
-                graphifyRepo?.logNotification(
-                    "${parsed.packageName}: ${parsed.title}"
-                )
+                // Notification metadata is kept in memory; message content is not persisted.
             } catch (e: Exception) { }
         }
     }
@@ -83,7 +81,7 @@ class JarvisNotificationListener : NotificationListenerService() {
         val isMessaging = sbn.packageName in messagingApps
         
         val sender = if (isMessaging) {
-            extras.getCharSequence(Notification.EXTRA_SENDER_TEXT)?.toString()
+            extras.getCharSequence(Notification.EXTRA_TITLE)?.toString()
         } else null
         
         return JarvisNotification(
