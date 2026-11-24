@@ -150,7 +150,7 @@ class JarvisNotificationListener : NotificationListenerService() {
         val sender: String?
     )
     
-    private val messagingApps = listOf = listOf(
+    private val messagingApps = listOf(
             "com.whatsapp",
             "com.google.android.apps.messaging",
             "com.samsung.android.messaging",
@@ -160,5 +160,4 @@ class JarvisNotificationListener : NotificationListenerService() {
             "com.slack",
             "com.discord"
         )
-    }
 }
