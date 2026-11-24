@@ -105,9 +105,11 @@ class ScreenReader(private val serviceProvider: () -> JarvisAccessibilityService
     }
 
     fun getFocusedNode(): AccessibilityNodeInfo? {
-        val rootNode = service.rootInActiveWindow ?: return null
-        val focused = rootNode.findFocus(AccessibilityNodeInfo.FOCUS_INPUT)
-        rootNode.recycle()
-        return focused
+        val rootNode = serviceProvider()?.rootInActiveWindow ?: return null
+        return try {
+            rootNode.findFocus(AccessibilityNodeInfo.FOCUS_INPUT)
+        } finally {
+            rootNode.recycle()
+        }
     }
 }
