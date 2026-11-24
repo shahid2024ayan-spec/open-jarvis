@@ -24,6 +24,9 @@ class ScreenshotCapture(private val context: Context) {
     private var handlerThread: HandlerThread? = null
     private var handler: Handler? = null
     private var isCapturing = false
+    private var displayWidth = 0
+    private var displayHeight = 0
+    private var displayDensity = 0
 
     fun startCapture(): Boolean {
         val projectionManager = context.getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
@@ -48,6 +51,9 @@ class ScreenshotCapture(private val context: Context) {
         val width = metrics.widthPixels
         val height = metrics.heightPixels
         val density = metrics.densityDpi
+        displayWidth = width
+        displayHeight = height
+        displayDensity = density
 
         handlerThread = HandlerThread("ScreenshotThread").apply { start() }
         handler = Handler(handlerThread!!.looper)
@@ -73,10 +79,9 @@ class ScreenshotCapture(private val context: Context) {
         try {
             mediaProjection?.createVirtualDisplay(
                 "Screenshot",
-                surface.width,
-                surface.height,
-                surface.allocation,
-                surface.allocation,
+                displayWidth,
+                displayHeight,
+                displayDensity,
                 surface,
                 null,
                 handler
@@ -119,6 +124,9 @@ class ScreenshotCapture(private val context: Context) {
         handlerThread?.quitSafely()
         handlerThread = null
         handler = null
+        displayWidth = 0
+        displayHeight = 0
+        displayDensity = 0
     }
 
     private fun getActivities(): List<Activity> {
