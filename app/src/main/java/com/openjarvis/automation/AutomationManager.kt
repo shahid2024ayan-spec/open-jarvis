@@ -123,8 +123,15 @@ class AutomationManager(private val context: Context) {
             }
         }
         
-        WorkManager.getInstance(context)
-            .enqueueUniqueWork(automation.id, ExistingWorkPolicy.REPLACE, request)
+        val workManager = WorkManager.getInstance(context)
+        when (request) {
+            is PeriodicWorkRequest -> workManager.enqueueUniquePeriodicWork(
+                automation.id, ExistingPeriodicWorkPolicy.REPLACE, request
+            )
+            is OneTimeWorkRequest -> workManager.enqueueUniqueWork(
+                automation.id, ExistingWorkPolicy.REPLACE, request
+            )
+        }
     }
     
     private fun cancelAutomation(id: String) {
