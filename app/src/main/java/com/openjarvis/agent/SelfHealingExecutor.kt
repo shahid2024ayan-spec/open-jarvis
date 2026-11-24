@@ -10,7 +10,7 @@ class SelfHealingExecutor(private val context: Context) {
     
     private val screenReader = ScreenReader(context)
     private val graphifyRepo = GraphifyRepository(context)
-    private val llm = UniversalAdapter.getModelManager(context)
+    private val llm = UniversalAdapter(context)
     
     private val maxAttempts = 3
     private val baseDelayMs = 1000L
