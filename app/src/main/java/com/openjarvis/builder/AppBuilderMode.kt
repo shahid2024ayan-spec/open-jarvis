@@ -17,6 +17,8 @@ class AppBuilderMode(private val context: Context) {
     private val _state = MutableStateFlow<BuildState>(BuildState.Idle)
     val state = _state
     
+    enum class Complexity { SIMPLE, MEDIUM, COMPLEX }
+
     sealed class BuildState {
         object Idle : BuildState()
         data class Planning(val summary: String) : BuildState()
@@ -218,8 +220,6 @@ class AppBuilderMode(private val context: Context) {
         GRADLE, GRADLE_APP, MANIFEST, KOTLIN, XML, PROPERTIES, PROGUARD, MARKDOWN
     }
 }
-
-enum class Complexity { SIMPLE, MEDIUM, COMPLEX }
 
 data class AppSpec(
     val appName: String,
