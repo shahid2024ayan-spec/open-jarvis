@@ -49,6 +49,25 @@ class SocketServer(
         const val SOCKET_NAME = "jarvis.port"
         private const val MAX_COMMAND_LENGTH = 2000
         private const val MAX_REQUESTS_PER_SECOND = 10
+
+        internal fun parseRequestLine(line: String): Pair<String, String>? = try {
+            val json = org.json.JSONObject(line)
+            val command = json.optString("cmd", "")
+            val requestId = json.optString("requestId", "")
+            if (command.isBlank()) null else Pair(requestId, command)
+        } catch (_: Exception) {
+            null
+        }
+
+        internal fun errorResponse(requestId: String, error: String): String =
+            """{"requestId":"$requestId","status":"error","result":"$error"}"""
+
+        internal fun escapeJsonValue(value: String): String = value
+            .replace("\\", "\\\\")
+            .replace("\"", "\\\"")
+            .replace("\n", "\\n")
+            .replace("\r", "\\r")
+            .replace("\t", "\\t")
     }
     
     fun start() {
@@ -213,30 +232,12 @@ class SocketServer(
         job.join()
     }
 
-    private fun parseRequest(line: String): Pair<String, String>? {
-        return try {
-            val json = org.json.JSONObject(line)
-            val cmd = json.optString("cmd", "")
-            val requestId = json.optString("requestId", "")
-            
-            if (cmd.isBlank()) null
-            else Pair(requestId, cmd)
-        } catch (e: Exception) {
-            null
-        }
-    }
+    internal fun parseRequest(line: String): Pair<String, String>? =
+        parseRequestLine(line)
 
-    internal fun createErrorResponse(requestId: String, error: String): String {
-        return """{"requestId":"$requestId","status":"error","result":"$error"}"""
-    }
+    internal fun createErrorResponse(requestId: String, error: String): String =
+        errorResponse(requestId, error)
 
-    internal fun escapeJson(s: String): String {
-        return s
-            .replace("\\", "\\\\")
-            .replace("\"", "\\\"")
-            .replace("\n", "\\n")
-            .replace("\r", "\\r")
-            .replace("\t", "\\t")
-    }
+    internal fun escapeJson(s: String): String = escapeJsonValue(s)
 
 }
