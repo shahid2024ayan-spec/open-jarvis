@@ -91,7 +91,7 @@ class MainActivity : ComponentActivity() {
     }
     
     private fun startOverlayService() {
-        startService(Intent(this, OverlayService::class.java))
+        OverlayService.start(this)
         Toast.makeText(this, "Jarvis is active", Toast.LENGTH_SHORT).show()
     }
     
