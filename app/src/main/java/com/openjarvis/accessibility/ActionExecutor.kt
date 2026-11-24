@@ -105,7 +105,3 @@ class ActionExecutor(private val service: JarvisAccessibilityService) {
         val errorMessage: String?
     )
 }
-
-private object Dispatchers {
-    val IO = kotlinx.coroutines.Dispatchers.IO
-}
